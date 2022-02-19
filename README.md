@@ -1,5 +1,5 @@
 <p align="left">
-  <img height="85" width="75" src="https://github.com/psadi/calc/-/raw/master/img/calc.png?inline=false">
+  <img height="85" width="75" src="https://github.com/psadi/calc/blob/main/img/calc.png">
 
 
 # <strong>CALC</strong>
