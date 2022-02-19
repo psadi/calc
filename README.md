@@ -47,7 +47,7 @@ This project is intended to be a safe, welcoming space for collaboration and con
 
 ---
 ## <strong>Author</strong>
-* **gh0s1** - *Owner* - [addy3494]( https://gitlab.com/adithya3494 )
+* **psadi** - *Owner* - [adpsadidy3494]( https://gitlab.com/psadi )
 
 </br>
 </br>
