@@ -20,14 +20,13 @@ import subprocess
 
 def validate(expression: str) -> bool:
     """Validate if the given expression is a valid mathematical expression"""
-    operator = r"^(\+|\-|\*|\/|\(|\)|\.)$"
+    operator = "^(\+|\-|\*|\/|\(|\)|\.|\%)$"
     status = True
     for char in expression:
         if char.isnumeric() or re.match(operator, char):
             pass
         else:
             status = False
-
     return status
 
 def subprocess_run(command):
@@ -49,12 +48,11 @@ def main():
         parser.add_argument('-e', type=str, help="Input a mathematical expression")
         args = parser.parse_args()
 
-        print(type(args))
         if subprocess_run('which zenity')[0] == 0:
             if args.e is not None:
                 expression = args.e
             else:
-                expression = subprocess_run("zenity  --entry --text 'Expression?'")[1]
+                expression = subprocess_run("zenity  --entry --text 'Expression?'")[1].strip()
 
             if validate(expression):
                 evaluate = f"expression: {expression} = {eval(expression)}"
