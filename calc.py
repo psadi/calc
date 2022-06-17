@@ -17,16 +17,14 @@ import sys
 import argparse
 import subprocess
 
-
 def validate(expression: str) -> bool:
     """Validate if the given expression is a valid mathematical expression"""
-    operator = "^(\+|\-|\*|\/|\(|\)|\.|\%)$"
+    operator = r"^(\+|\-|\*|\/|\(|\)|\.|\%)$"
     status = True
     for char in expression:
-        if char.isnumeric() or re.match(operator, char):
-            pass
-        else:
+        if not (char.isnumeric() or re.match(operator, char)):
             status = False
+            raise ValueError("Not a valid number/operator")
     return status
 
 def subprocess_run(command):
@@ -43,26 +41,29 @@ def subprocess_run(command):
 
 def main():
     """calc: main func"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-e', type=str, help="Pass an arithmetic expression")
+    args = parser.parse_args()
+
     try:
-        parser = argparse.ArgumentParser()
-        parser.add_argument('-e', type=str, help="Input a mathematical expression")
-        args = parser.parse_args()
 
-        if subprocess_run('which zenity')[0] == 0:
-            if args.e is not None:
-                expression = args.e
-            else:
-                expression = subprocess_run("zenity  --entry --text 'Expression?'")[1].strip()
+        if not subprocess_run('which zenity')[0] == 0:
+            raise ValueError("Zenity not found")
 
-            if validate(expression):
-                evaluate = f"expression: {expression} = {eval(expression)}"
-                subprocess_run(f"zenity --info --text '{evaluate}'")
-            else:
-                subprocess_run("zenity --info --text 'Invalid Expresson'")
+        if args.e is not None:
+            expression = args.e
         else:
-            sys.exit(1)
+            expression = subprocess_run("zenity  --entry --text 'Expression?'")[1].strip()
 
-    except subprocess.CalledProcessError:
+        if not validate(expression):
+            subprocess_run("zenity --info --text 'Invalid Expression!'")
+            raise ValueError("Invalid Expression!")
+
+        result = f"expression: {expression} = {eval(expression)}"
+        subprocess_run(f"zenity --info --text '{result}'")
+
+    except (subprocess.CalledProcessError, SyntaxError, ValueError) as ex:
+        print(ex)
         sys.exit(1)
 
 if __name__ == "__main__":
