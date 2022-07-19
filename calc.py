@@ -44,6 +44,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', type=str, help="Pass an arithmetic expression")
     args = parser.parse_args()
+    console_mode = False
 
     try:
 
@@ -52,6 +53,7 @@ def main():
 
         if args.e is not None:
             expression = args.e
+            console_mode = True
         else:
             expression = subprocess_run("zenity  --entry --text 'Expression?'")[1].strip()
 
@@ -60,7 +62,8 @@ def main():
             raise ValueError("Invalid Expression!")
 
         result = f"expression: {expression} = {eval(expression)}"
-        subprocess_run(f"zenity --info --text '{result}'")
+        if not console_mode: subprocess_run(f"zenity --info --text '{result}'")
+        else: print(result)
 
     except (subprocess.CalledProcessError, SyntaxError, ValueError) as ex:
         print(ex)
